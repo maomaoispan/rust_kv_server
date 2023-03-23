@@ -11,6 +11,16 @@ impl From<Value> for CommandResponse {
     }
 }
 
+impl From<Vec<Value>> for CommandResponse {
+    fn from(values: Vec<Value>) -> Self {
+        Self {
+            status: StatusCode::OK.as_u16() as _,
+            values: vec![],
+            ..Default::default()
+        }
+    }
+}
+
 impl From<Vec<Kvpair>> for CommandResponse {
     fn from(pairs: Vec<Kvpair>) -> Self {
         Self {

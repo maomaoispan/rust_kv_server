@@ -11,23 +11,23 @@ pub mod command_request {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum RequestData {
         #[prost(message, tag="1")]
-        Hget(super::Hget),
-        #[prost(message, tag="2")]
-        Hgetall(super::Hgetall),
-        #[prost(message, tag="3")]
-        Hmget(super::Hmget),
-        #[prost(message, tag="4")]
         Hset(super::Hset),
+        #[prost(message, tag="2")]
+        Hget(super::Hget),
+        #[prost(message, tag="3")]
+        Hdel(super::Hdel),
+        #[prost(message, tag="4")]
+        Hexist(super::Hexist),
         #[prost(message, tag="5")]
         Hmset(super::Hmset),
         #[prost(message, tag="6")]
-        Hdel(super::Hdel),
+        Hmget(super::Hmget),
         #[prost(message, tag="7")]
         Hmdel(super::Hmdel),
         #[prost(message, tag="8")]
-        Hexist(super::Hexist),
-        #[prost(message, tag="9")]
         Hmexist(super::Hmexist),
+        #[prost(message, tag="9")]
+        Hgetall(super::Hgetall),
     }
 }
 /// 服务器的响应
@@ -46,31 +46,6 @@ pub struct CommandResponse {
     /// 成功返回的 kv pairs
     #[prost(message, repeated, tag="4")]
     pub pairs: ::prost::alloc::vec::Vec<Kvpair>,
-}
-/// 从 table 中获取一个 key，返回 value
-#[derive(PartialOrd)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Hget {
-    #[prost(string, tag="1")]
-    pub table: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub key: ::prost::alloc::string::String,
-}
-/// 从 table 中获取所有的 Kvpair
-#[derive(PartialOrd)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Hgetall {
-    #[prost(string, tag="1")]
-    pub table: ::prost::alloc::string::String,
-}
-/// 从 table 中获取一组 key，返回它们的 value
-#[derive(PartialOrd)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Hmget {
-    #[prost(string, tag="1")]
-    pub table: ::prost::alloc::string::String,
-    #[prost(string, repeated, tag="2")]
-    pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 /// 返回的值
 #[derive(PartialOrd)]
@@ -115,15 +90,14 @@ pub struct Hset {
     #[prost(message, optional, tag="2")]
     pub pair: ::core::option::Option<Kvpair>,
 }
-/// 往 table 中存一组 kvpair，
-/// 如果 table 不存在就创建这个 table
+/// 从 table 中获取一个 key，返回 value
 #[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Hmset {
+pub struct Hget {
     #[prost(string, tag="1")]
     pub table: ::prost::alloc::string::String,
-    #[prost(message, repeated, tag="2")]
-    pub pairs: ::prost::alloc::vec::Vec<Kvpair>,
+    #[prost(string, tag="2")]
+    pub key: ::prost::alloc::string::String,
 }
 /// 从 table 中删除一个 key，返回它之前的值
 #[derive(PartialOrd)]
@@ -134,15 +108,6 @@ pub struct Hdel {
     #[prost(string, tag="2")]
     pub key: ::prost::alloc::string::String,
 }
-/// 从 table 中删除一组 key，返回它们之前的值
-#[derive(PartialOrd)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Hmdel {
-    #[prost(string, tag="1")]
-    pub table: ::prost::alloc::string::String,
-    #[prost(string, repeated, tag="2")]
-    pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-}
 /// 查看 key 是否存在
 #[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -152,6 +117,34 @@ pub struct Hexist {
     #[prost(string, tag="2")]
     pub key: ::prost::alloc::string::String,
 }
+/// 往 table 中存一组 kvpair，
+/// 如果 table 不存在就创建这个 table
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Hmset {
+    #[prost(string, tag="1")]
+    pub table: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="2")]
+    pub pairs: ::prost::alloc::vec::Vec<Kvpair>,
+}
+/// 从 table 中获取一组 key，返回它们的 value
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Hmget {
+    #[prost(string, tag="1")]
+    pub table: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag="2")]
+    pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+/// 从 table 中删除一组 key，返回它们之前的值
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Hmdel {
+    #[prost(string, tag="1")]
+    pub table: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag="2")]
+    pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
 /// 查看一组 key 是否存在
 #[derive(PartialOrd)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -160,4 +153,11 @@ pub struct Hmexist {
     pub table: ::prost::alloc::string::String,
     #[prost(string, repeated, tag="2")]
     pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+/// 从 table 中获取所有的 Kvpair
+#[derive(PartialOrd)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Hgetall {
+    #[prost(string, tag="1")]
+    pub table: ::prost::alloc::string::String,
 }

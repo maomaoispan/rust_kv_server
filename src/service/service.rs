@@ -30,7 +30,7 @@ impl<T: Storage> Service<T> {
         }
     }
 
-    pub fn execute(&self, cmd: CommandRequest) -> CommandResponse {
+    pub fn run(&self, cmd: CommandRequest) -> CommandResponse {
         debug!("Got request: {:?}", cmd);
         let res = dispatch(cmd, &self.inner.store);
         debug!("Executed response: {:?}", res);
@@ -41,9 +41,12 @@ impl<T: Storage> Service<T> {
 
 pub fn dispatch(cmd: CommandRequest, store: &impl Storage) -> CommandResponse {
     match cmd.request_data {
-        Some(RequestData::Hget(v)) => v.execute(store),
-        Some(RequestData::Hgetall(v)) => v.execute(store),
         Some(RequestData::Hset(v)) => v.execute(store),
+        Some(RequestData::Hget(v)) => v.execute(store),
+        Some(RequestData::Hdel(v)) => v.execute(store),
+
+        Some(RequestData::Hgetall(v)) => v.execute(store),
+
         None => KvError::InvalidCommand("Request has no data".into()).into(),
         _ => KvError::Internal("Not implemented".into()).into(),
     }

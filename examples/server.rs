@@ -22,7 +22,7 @@ async fn main() -> Result<()> {
                 AsyncProstStream::<_, CommandRequest, CommandResponse, _>::from(stream).for_async();
 
             while let Some(Ok(cmd)) = stream.next().await {
-                let res = svc.execute(cmd);
+                let res = svc.run(cmd);
                 stream.send(res).await.unwrap();
             }
             info!("Client {:?} disconnected", addr);

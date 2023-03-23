@@ -7,15 +7,18 @@ package abi;
 // 来自客户端的命令请求
 message CommandRequest {
   oneof request_data {
-    Hget hget = 1;
-    Hgetall hgetall = 2;
-    Hmget hmget = 3;
-    Hset hset = 4;
+
+    Hset hset = 1;
+    Hget hget = 2;
+    Hdel hdel = 3;
+    Hexist hexist = 4;
+
     Hmset hmset = 5;
-    Hdel hdel = 6;
+    Hmget hmget = 6;
     Hmdel hmdel = 7;
-    Hexist hexist = 8;
-    Hmexist hmexist = 9;
+    Hmexist hmexist = 8;
+
+    Hgetall hgetall = 9;
   }
 }
 
@@ -29,21 +32,6 @@ message CommandResponse {
   repeated Value values = 3;
   // 成功返回的 kv pairs
   repeated Kvpair pairs = 4;
-}
-
-// 从 table 中获取一个 key，返回 value
-message Hget {
-  string table = 1;
-  string key = 2;
-}
-
-// 从 table 中获取所有的 Kvpair
-message Hgetall { string table = 1; }
-
-// 从 table 中获取一组 key，返回它们的 value
-message Hmget {
-  string table = 1;
-  repeated string keys = 2;
 }
 
 // 返回的值
@@ -70,11 +58,10 @@ message Hset {
   Kvpair pair = 2;
 }
 
-// 往 table 中存一组 kvpair，
-// 如果 table 不存在就创建这个 table
-message Hmset {
+// 从 table 中获取一个 key，返回 value
+message Hget {
   string table = 1;
-  repeated Kvpair pairs = 2;
+  string key = 2;
 }
 
 // 从 table 中删除一个 key，返回它之前的值
@@ -83,16 +70,29 @@ message Hdel {
   string key = 2;
 }
 
-// 从 table 中删除一组 key，返回它们之前的值
-message Hmdel {
-  string table = 1;
-  repeated string keys = 2;
-}
-
 // 查看 key 是否存在
 message Hexist {
   string table = 1;
   string key = 2;
+}
+
+// 往 table 中存一组 kvpair，
+// 如果 table 不存在就创建这个 table
+message Hmset {
+  string table = 1;
+  repeated Kvpair pairs = 2;
+}
+
+// 从 table 中获取一组 key，返回它们的 value
+message Hmget {
+  string table = 1;
+  repeated string keys = 2;
+}
+
+// 从 table 中删除一组 key，返回它们之前的值
+message Hmdel {
+  string table = 1;
+  repeated string keys = 2;
 }
 
 // 查看一组 key 是否存在
@@ -100,3 +100,6 @@ message Hmexist {
   string table = 1;
   repeated string keys = 2;
 }
+
+// 从 table 中获取所有的 Kvpair
+message Hgetall { string table = 1; }

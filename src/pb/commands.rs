@@ -1,28 +1,5 @@
 use super::CommandService;
-use crate::{CommandResponse, Hget, Hgetall, Hset, KvError, Storage, Value};
-
-impl CommandService for Hget {
-    fn execute(self, store: &impl Storage) -> CommandResponse {
-        let rst = store.get(&self.table, &self.key);
-
-        match rst {
-            Ok(Some(v)) => v.into(),
-            Ok(None) => KvError::NotFound(self.table, self.key).into(),
-            Err(e) => e.into(),
-        }
-    }
-}
-
-impl CommandService for Hgetall {
-    fn execute(self, store: &impl Storage) -> CommandResponse {
-        let rst = store.get_all(&self.table);
-
-        match rst {
-            Ok(v) => v.into(),
-            Err(e) => e.into(),
-        }
-    }
-}
+use crate::{CommandResponse, Hdel, Hget, Hgetall, Hset, KvError, Storage, Value};
 
 impl CommandService for Hset {
     fn execute(self, store: &impl Storage) -> CommandResponse {
@@ -36,6 +13,41 @@ impl CommandService for Hset {
                 }
             }
             None => Value::default().into(),
+        }
+    }
+}
+
+impl CommandService for Hget {
+    fn execute(self, store: &impl Storage) -> CommandResponse {
+        let rst = store.get(&self.table, &self.key);
+
+        match rst {
+            Ok(Some(v)) => v.into(),
+            Ok(None) => KvError::NotFound(self.table, self.key).into(),
+            Err(e) => e.into(),
+        }
+    }
+}
+
+impl CommandService for Hdel {
+    fn execute(self, store: &impl Storage) -> CommandResponse {
+        let rst = store.del(&self.table, &self.key);
+
+        match rst {
+            Ok(Some(v)) => v.into(),
+            Ok(None) => (vec![] as Vec<Value>).into(),
+            Err(e) => e.into(),
+        }
+    }
+}
+
+impl CommandService for Hgetall {
+    fn execute(self, store: &impl Storage) -> CommandResponse {
+        let rst = store.get_all(&self.table);
+
+        match rst {
+            Ok(v) => v.into(),
+            Err(e) => e.into(),
         }
     }
 }

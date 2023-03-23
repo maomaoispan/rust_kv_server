@@ -16,12 +16,12 @@ mod tests {
         let service_cloned = service.clone();
 
         let handle = thread::spawn(move || {
-            let res = service_cloned.execute(CommandRequest::new_hset("t1", "k1", "v1".into()));
+            let res = service_cloned.run(CommandRequest::new_hset("t1", "k1", "v1".into()));
             assert_res_ok(res, &[Value::default()], &[])
         });
         handle.join().unwrap();
 
-        let res = service.execute(CommandRequest::new_hget("t1", "k1"));
+        let res = service.run(CommandRequest::new_hget("t1", "k1"));
         assert_res_ok(res, &["v1".into()], &[]);
     }
 
