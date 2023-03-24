@@ -31,6 +31,15 @@ impl CommandRequest {
         }
     }
 
+    pub fn new_hexist(table: impl Into<String>, key: impl Into<String>) -> Self {
+        Self {
+            request_data: Some(RequestData::Hexist(crate::Hexist {
+                table: table.into(),
+                key: key.into(),
+            })),
+        }
+    }
+
     pub fn new_hgetall(table: impl Into<String>) -> Self {
         Self {
             request_data: Some(RequestData::Hgetall(Hgetall {

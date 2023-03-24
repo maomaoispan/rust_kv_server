@@ -15,7 +15,7 @@ impl From<Vec<Value>> for CommandResponse {
     fn from(values: Vec<Value>) -> Self {
         Self {
             status: StatusCode::OK.as_u16() as _,
-            values: vec![],
+            values: values,
             ..Default::default()
         }
     }

@@ -35,7 +35,7 @@ impl CommandService for Hdel {
 
         match rst {
             Ok(Some(v)) => v.into(),
-            Ok(None) => (vec![] as Vec<Value>).into(),
+            Ok(None) => Vec::<Value>::new().into(),
             Err(e) => e.into(),
         }
     }

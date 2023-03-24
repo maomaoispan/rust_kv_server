@@ -9,6 +9,22 @@ use crate::{
 
 struct ServiceInner<T> {
     store: T,
+    on_received: Vec<fn(&CommandRequest)>,
+    on_executed: Vec<fn(&CommandResponse)>,
+    on_before_send: Vec<fn(&mut CommandResponse)>,
+    on_after_send: Vec<fn()>,
+}
+
+impl<T: Storage> ServiceInner<T> {
+    pub fn new(store: T) -> Self {
+        Self {
+            store,
+            on_received: Vec::new(),
+            on_executed: Vec::new(),
+            on_before_send: Vec::new(),
+            on_after_send: Vec::new(),
+        }
+    }
 }
 
 pub struct Service<T = MemTable> {
@@ -26,7 +42,13 @@ impl<T> Clone for Service<T> {
 impl<T: Storage> Service<T> {
     pub fn new(store: T) -> Self {
         Self {
-            inner: Arc::new(ServiceInner { store }),
+            inner: Arc::new(ServiceInner {
+                store,
+                on_received: Vec::new(),
+                on_executed: Vec::new(),
+                on_before_send: Vec::new(),
+                on_after_send: Vec::new(),
+            }),
         }
     }
 
